@@ -5,6 +5,8 @@ import flixel.FlxG;
 import flixel.FlxSubState;
 import flixel.util.FlxColor;
 import openfl.Lib;
+import flixel.input.actions.FlxActionInput;
+import ui.FlxVirtualPad;
 
 class MusicBeatSubstate extends FlxSubState
 {
@@ -24,6 +26,28 @@ class MusicBeatSubstate extends FlxSubState
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
+
+	var _virtualpad:FlxVirtualPad;
+	var trackedinputs:Array<FlxActionInput> = [];
+
+	// adding virtualpad to state
+	 public function addVirtualPad(?DPad:FlxDPadMode, ?Action:FlxActionMode)
+	{  _virtualpad = new FlxVirtualPad(DPad, Action);
+		 _virtualpad.alpha = 0.75;
+		 add(_virtualpad);
+		 controls.setVirtualPad(_virtualpad, DPad, Action);
+		trackedinputs = controls.trackedinputs;
+		controls.trackedinputs = [];
+		 #if android  controls.addAndroidBack();
+		 #end
+		
+	}
+		override function destroy()
+		{
+		 controls.removeFlxInput(trackedinputs);
+		 super.destroy();
+		
+		}
 
 	var array:Array<FlxColor> = [
 		FlxColor.fromRGB(148, 0, 211),

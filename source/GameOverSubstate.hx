@@ -9,6 +9,7 @@ import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.FlxCamera;
 
 class GameOverSubstate extends MusicBeatSubstate
 {
@@ -75,6 +76,16 @@ class GameOverSubstate extends MusicBeatSubstate
 				ease: FlxEase.quadOut
 			});
 		}
+
+			
+		#if mobileC
+		addVirtualPad(NONE, A_B);
+		var camcontrol = new FlxCamera();
+		FlxG.cameras.add(camcontrol);
+		camcontrol.bgColor.alpha = 0;
+		_virtualpad.cameras = [camcontrol];
+		
+		#end
 
 		if (!crashdeath)
 			bf.playAnim('firstDeath');

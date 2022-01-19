@@ -4,6 +4,7 @@ import flixel.input.keyboard.FlxKey;
 import haxe.Exception;
 import openfl.geom.Matrix;
 import openfl.display.BitmapData;
+import ui.Mobilecontrols;
 import openfl.utils.AssetType;
 import lime.graphics.Image;
 import flixel.graphics.FlxGraphic;
@@ -297,6 +298,10 @@ class PlayState extends MusicBeatState
 	private var saveNotes:Array<Float> = [];
 
 	private var executeModchart = false;
+
+	#if mobileC
+	var mcontrols:Mobilecontrols; 
+	#end
 
 	// API stuff
 
@@ -1688,6 +1693,30 @@ class PlayState extends MusicBeatState
 		if (loadRep)
 			add(replayTxt);
 
+		#if mobileC
+			mcontrols = new Mobilecontrols();
+			switch (mcontrols.mode)
+			{
+				case VIRTUALPAD_RIGHT | VIRTUALPAD_LEFT | VIRTUALPAD_CUSTOM:
+					controls.setVirtualPad(mcontrols._virtualPad, FULL, NONE);
+				case HITBOX:
+					controls.setHitBox(mcontrols._hitbox);
+				default:
+			}
+			trackedinputs = controls.trackedinputs;
+			controls.trackedinputs = [];
+
+			var camcontrol = new FlxCamera();
+			FlxG.cameras.add(camcontrol);
+			camcontrol.bgColor.alpha = 0;
+			mcontrols.cameras = [camcontrol];
+
+			mcontrols.visible = false;
+
+			add(mcontrols);
+		#end
+
+
 		// Literally copy-paste of the above, fu
 		botPlayState = new FlxText(0, healthBarBG.y + (FlxG.save.data.downscroll ? 100 : -100), 0, "BOTPLAY", 20);
 		botPlayState.setFormat(LangUtil.getFont(), 42, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -2530,6 +2559,11 @@ class PlayState extends MusicBeatState
 
 	function startCountdown():Void
 	{
+
+		#if mobileC
+		mcontrols.visible = true;
+		#end
+
 		FlxG.camera.zoom = defaultCamZoom;
 		camHUD.visible = true;
 		midsongcutscene = true;
@@ -3326,7 +3360,7 @@ class PlayState extends MusicBeatState
 		else
 			scoreTxt.text = LangUtil.getString('cmnScore') + ':' + songScore;
 
-		if (controls.PAUSE && startedCountdown && canPause)
+		if (controls.PAUSE #if android || FlxG.android.justReleased.BACK #end && startedCountdown && canPause)
 		{
 			persistentUpdate = false;
 			persistentDraw = true;
@@ -4297,6 +4331,10 @@ class PlayState extends MusicBeatState
 
 	function endSong():Void
 	{
+		#if mobileC
+		mcontrols.visible = false;
+		#end
+
 		practiceMode = false;
 		showCutscene = true;
 		deathCounter = 0;
@@ -4378,11 +4416,8 @@ class PlayState extends MusicBeatState
 
 					if (SONG.song.toLowerCase() == 'glitcher (monika mix)')
 					{
-						#if FEATURE_WEBM
-						FlxG.switchState(new VideoState('assets/videos/credits/credits.webm', new DokiStoryState()));
-						#else
-						FlxG.switchState(new DokiStoryState());
-						#end
+
+						FlxG.switchState(new VideoState('assets/videos/credits/credits', new DokiStoryState()));
 					}
 					else
 					{
@@ -4439,13 +4474,9 @@ class PlayState extends MusicBeatState
 
 								new FlxTimer().start(1.3, function(timer:FlxTimer)
 								{
-									#if FEATURE_WEBM
 									trace('cutscene successful');
-									LoadingState.loadAndSwitchState(new VideoState('assets/videos/monika/fakeout.webm', new PlayState()));
+									LoadingState.loadAndSwitchState(new VideoState('assets/videos/monika/fakeout', new PlayState()));
 									trace('huh what is this?');
-									#else
-									LoadingState.loadAndSwitchState(new PlayState());
-									#end
 								});
 							}
 						default:
@@ -4800,22 +4831,22 @@ class PlayState extends MusicBeatState
 	var rightHold:Bool = false;
 	var leftHold:Bool = false;
 
-	private function keyShit():Void // I've invested in emma stocks
-	{
-		// control arrays, order L D R U
-		var holdArray:Array<Bool> = [controls.NOTE_LEFT, controls.NOTE_DOWN, controls.NOTE_UP, controls.NOTE_RIGHT];
-		var pressArray:Array<Bool> = [
-			controls.NOTE_LEFT_P,
-			controls.NOTE_DOWN_P,
-			controls.NOTE_UP_P,
-			controls.NOTE_RIGHT_P
-		];
-		var releaseArray:Array<Bool> = [
-			controls.NOTE_LEFT_R,
-			controls.NOTE_DOWN_R,
-			controls.NOTE_UP_R,
-			controls.NOTE_RIGHT_R
-		];
+private function keyShit():Void // I've invested in emma stocks
+		{
+         		// control arrays, order L D R U
+			var holdArray:Array<Bool> = [controls.LEFT, controls.DOWN, controls.UP, controls.RIGHT];
+			var pressArray:Array<Bool> = [
+				controls.LEFT_P,
+				controls.DOWN_P,
+				controls.UP_P,
+				controls.RIGHT_P
+			];
+			var releaseArray:Array<Bool> = [
+				controls.LEFT_R,
+				controls.DOWN_R,
+				controls.UP_R,
+				controls.RIGHT_R
+			];
 
 		// Prevent player input if botplay is on
 		if (FlxG.save.data.botplay)

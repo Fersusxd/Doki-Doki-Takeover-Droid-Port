@@ -14,6 +14,8 @@ class OutdatedSubState extends MusicBeatState
 {
 	public static var leftState:Bool = false;
 
+	var dathi:Bool = true;
+
 	public static var needVer:String = "IDFK LOL";
 	public static var currChanges:String = "dk";
 
@@ -23,7 +25,7 @@ class OutdatedSubState extends MusicBeatState
 	override function create()
 	{
 		super.create();
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBGFriends'));
+	/*	var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBGFriends'));
 		bg.screenCenter();
 		add(bg);
 
@@ -50,25 +52,18 @@ class OutdatedSubState extends MusicBeatState
 				colorRotation++;
 			else
 				colorRotation = 0;
-		}, 0);
+		}, 0);*/
 	}
 
 	override function update(elapsed:Float)
 	{
-		if (controls.BACK)
-		{
-			FlxG.save.data.funnyquestionpopup = true;
-			FlxG.switchState(new MainMenuState());
-		}
-		if (controls.ACCEPT)
-		{
+		if (dathi){
+			dathi = false;
 			FlxG.save.data.funnyquestionpopup = true;
 			FlxG.save.data.monibeaten = true;
 			FlxG.save.data.monipopup = true;
 			FlxG.save.data.weekUnlocked = 2;
 
-			#if debug
-			// devonlystuff
 			FlxG.save.data.sayobeaten = true;
 			FlxG.save.data.natbeaten = true;
 			FlxG.save.data.yuribeaten = true;
@@ -81,7 +76,6 @@ class OutdatedSubState extends MusicBeatState
 			FlxG.save.data.extra1popup = true;
 			FlxG.save.data.extra2popup = true;
 			FlxG.save.data.weekUnlocked = 7;
-			#end
 
 			FlxG.switchState(new MainMenuState());
 		}

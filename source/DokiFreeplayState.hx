@@ -62,7 +62,7 @@ class DokiFreeplayState extends MusicBeatState
 
 	override function create()
 	{
-		#if !PRELOAD_ALL
+		#if PRELOAD_ALL
 		if (!FlxG.sound.music.playing)
 		{
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
@@ -184,6 +184,10 @@ class DokiFreeplayState extends MusicBeatState
 		}
 
 		changeItem();
+
+		#if mobileC
+		addVirtualPad(FULL, A_B);
+		#end
 
 		super.create();
 	}
@@ -452,7 +456,7 @@ class DokiFreeplayState extends MusicBeatState
 			// lerpScore = 0;
 			#end
 
-			#if PRELOAD_ALL
+			#if !PRELOAD_ALL
 			FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
 
 			var hmm;

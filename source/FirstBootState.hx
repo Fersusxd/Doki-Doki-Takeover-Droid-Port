@@ -60,6 +60,10 @@ class FirstBootState extends MusicBeatState
 			grpOptionsTexts.add(optionText);
 		}
 
+		#if mobileC
+		addVirtualPad(UP_DOWN, A);
+		#end
+
 		super.create();
 	}
 

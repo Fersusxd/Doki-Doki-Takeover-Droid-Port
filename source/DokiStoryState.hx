@@ -268,6 +268,10 @@ class DokiStoryState extends MusicBeatState
 		updateText();
 		unlockedweeks();
 
+		#if mobileC  
+		addVirtualPad(FULL, A_B);
+		#end
+
 		super.create();
 	}
 
@@ -681,11 +685,7 @@ class DokiStoryState extends MusicBeatState
 					LoadingState.loadAndSwitchState(new PlayState(), true, true);
 					trace("Monika Week Selected");
 				case 1:
-					#if FEATURE_WEBM
-					LoadingState.loadAndSwitchState(new VideoState('assets/videos/sayointro/intro.webm', new PlayState()));
-					#else
-					LoadingState.loadAndSwitchState(new PlayState(), true, true);
-					#end
+					LoadingState.loadAndSwitchState(new VideoState('assets/videos/sayointro/intro', new PlayState()));
 					trace("Sayori Selected");
 				case 2:
 					LoadingState.loadAndSwitchState(new PlayState(), true, true);

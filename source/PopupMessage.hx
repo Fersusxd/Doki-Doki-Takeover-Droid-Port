@@ -65,11 +65,15 @@ class PopupMessage extends MusicBeatSubstate
 			text.antialiasing = true;
 			grpText.add(text);
 		}
+
+		#if mobileC
+		addVirtualPad(NONE, A);
+		#end
 	}
 
 	override function update(elapsed:Float)
 	{
-		if (FlxG.keys.justPressed.ENTER)
+		if (controls.ACCEPT)
 		{
 			FlxG.sound.play(Paths.sound('confirmMenu'));
 			DokiStoryState.showPopUp = false;

@@ -255,7 +255,20 @@ class DialogueBox extends FlxSpriteGroup
 			endinstantly();
 		}
 
-		if (PlayerSettings.player1.controls.ACCEPT && dialogueEnded && canSkip)
+		#if mobile
+		var justTouched:Bool = false;
+
+		for (touch in FlxG.touches.list)
+		{
+			justTouched = false;
+			
+			if (touch.justReleased){
+				justTouched = true;
+			}
+		}
+		#end
+
+		if (PlayerSettings.player1.controls.ACCEPT #if mobile || justTouched #end)
 		{
 			remove(dialogue);
 
